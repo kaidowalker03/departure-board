@@ -17,7 +17,6 @@ export default function AnalogClock() {
 
   const hourDeg = hours * 30 + minutes * 0.5;
   const minuteDeg = minutes * 6 + seconds * 0.1;
-  const secondDeg = seconds * 6;
 
   return (
     <div className={styles.clock}>
@@ -41,8 +40,8 @@ export default function AnalogClock() {
         {Array.from({ length: 12 }, (_, i) => {
           const num = i === 0 ? 12 : i;
           const angle = (i * 30 - 90) * (Math.PI / 180);
-          const x = 100 + 68 * Math.cos(angle);
-          const y = 100 + 68 * Math.sin(angle);
+          const x = 100 + 66 * Math.cos(angle);
+          const y = 100 + 66 * Math.sin(angle);
           return (
             <text
               key={`n${i}`}
@@ -50,7 +49,7 @@ export default function AnalogClock() {
               y={y}
               textAnchor="middle"
               dominantBaseline="central"
-              fontSize="14"
+              fontSize="15"
               fontWeight="bold"
               fill="#000"
               fontFamily="serif"
@@ -65,23 +64,15 @@ export default function AnalogClock() {
           x1="100" y1="100"
           x2={100 + 45 * Math.cos((hourDeg - 90) * Math.PI / 180)}
           y2={100 + 45 * Math.sin((hourDeg - 90) * Math.PI / 180)}
-          stroke="#000" strokeWidth="4" strokeLinecap="round"
+          stroke="#000" strokeWidth="5" strokeLinecap="round"
         />
 
         {/* 分針 */}
         <line
           x1="100" y1="100"
-          x2={100 + 62 * Math.cos((minuteDeg - 90) * Math.PI / 180)}
-          y2={100 + 62 * Math.sin((minuteDeg - 90) * Math.PI / 180)}
+          x2={100 + 65 * Math.cos((minuteDeg - 90) * Math.PI / 180)}
+          y2={100 + 65 * Math.sin((minuteDeg - 90) * Math.PI / 180)}
           stroke="#000" strokeWidth="3" strokeLinecap="round"
-        />
-
-        {/* 秒針 */}
-        <line
-          x1="100" y1="100"
-          x2={100 + 70 * Math.cos((secondDeg - 90) * Math.PI / 180)}
-          y2={100 + 70 * Math.sin((secondDeg - 90) * Math.PI / 180)}
-          stroke="#cc0000" strokeWidth="1.5" strokeLinecap="round"
         />
 
         {/* 中心 */}

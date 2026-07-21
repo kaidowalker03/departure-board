@@ -5,60 +5,50 @@ import styles from "./FlipChar.module.css";
 
 interface FlipCharProps {
   char: string;
-  delay?: number; // ms delay before flip starts
+  delay?: number;
 }
 
 export default function FlipChar({ char, delay = 0 }: FlipCharProps) {
-  const [currentChar, setCurrentChar] = useState(char);
+  const [displayChar, setDisplayChar] = useState(char);
   const [nextChar, setNextChar] = useState(char);
   const [flipping, setFlipping] = useState(false);
-  const prevCharRef = useRef(char);
+  const prevRef = useRef(char);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (char === prevCharRef.current) return;
+    if (char === prevRef.current) return;
 
-    const timeout = setTimeout(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    timeoutRef.current = setTimeout(() => {
       setNextChar(char);
       setFlipping(true);
     }, delay);
 
-    return () => clearTimeout(timeout);
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, [char, delay]);
 
   const handleAnimationEnd = () => {
-    setCurrentChar(nextChar);
+    setDisplayChar(nextChar);
     setFlipping(false);
-    prevCharRef.current = nextChar;
+    prevRef.current = nextChar;
   };
 
   return (
-    <div className={styles.flipChar}>
-      {/* Upper half - static current */}
-      <div className={styles.top}>
-        <span>{currentChar}</span>
-      </div>
-
-      {/* Lower half - static current (revealed after flip) */}
-      <div className={styles.bottom}>
-        <span>{flipping ? nextChar : currentChar}</span>
-      </div>
-
-      {/* Upper flap - flips down to reveal next char */}
+    <span className={styles.char}>
+      <span className={styles.static}>{displayChar}</span>
       {flipping && (
-        <div
-          className={styles.flipTop}
-          onAnimationEnd={handleAnimationEnd}
-        >
-          <span>{currentChar}</span>
-        </div>
+        <>
+          <span className={styles.flipOut} onAnimationEnd={handleAnimationEnd}>
+            {displayChar}
+          </span>
+          <span className={styles.flipIn}>
+            {nextChar}
+          </span>
+        </>
       )}
-
-      {/* Lower flap - flips down to show next char bottom */}
-      {flipping && (
-        <div className={styles.flipBottom}>
-          <span>{nextChar}</span>
-        </div>
-      )}
-    </div>
+    </span>
   );
 }
