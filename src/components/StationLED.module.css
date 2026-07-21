@@ -1,40 +1,71 @@
 .container {
   background: #111;
-  padding: 8px 12px 6px;
-  overflow-x: auto;
+  padding: 4px 8px 8px;
+  position: relative;
 }
 
-/* 駅の横一列 */
-.stationRow {
+.boardArea {
+  position: relative;
+  min-height: 100px;
+}
+
+/* 分岐エリア（上部） */
+.branchArea {
+  position: relative;
+  height: 50px;
+}
+
+.branch {
+  position: absolute;
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 0;
+  gap: 1px;
+  bottom: 0;
+}
+
+.branchStation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 1.3em;
+}
+
+.branchName {
+  font-size: 0.45rem;
+  color: #999;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  line-height: 1;
+  letter-spacing: -0.1em;
+  white-space: nowrap;
+  height: 3em;
+}
+
+/* 本線（横一列） */
+.mainLine {
+  display: flex;
+  align-items: flex-start;
+  border-top: 2px solid #555;
+  padding-top: 4px;
 }
 
 .station {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 1.4em;
-  min-width: 1.4em;
-}
-
-.nameArea {
-  height: 5em;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  flex: 1;
+  min-width: 0;
 }
 
 .name {
-  font-size: 0.5rem;
+  font-size: 0.45rem;
   color: #aaa;
   writing-mode: vertical-rl;
   text-orientation: upright;
   line-height: 1;
   letter-spacing: -0.1em;
   white-space: nowrap;
+  height: 4.5em;
+  overflow: hidden;
 }
 
 .dot {
@@ -42,38 +73,11 @@
   height: 8px;
   border-radius: 50%;
   background: #333;
-  margin-top: 2px;
-  transition: background 0.3s, box-shadow 0.3s;
+  margin-top: 3px;
+  flex-shrink: 0;
 }
 
 .dot.active {
   background: #fff;
-  box-shadow: 0 0 4px #fff;
-}
-
-/* 分岐線 */
-.branches {
-  display: flex;
-  gap: 16px;
-  margin-top: 4px;
-  padding-left: 40px;
-}
-
-.branchLine {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.branchLabel {
-  font-size: 0.45rem;
-  color: #777;
-  white-space: nowrap;
-  writing-mode: horizontal-tb;
-}
-
-.branchStations {
-  display: flex;
-  align-items: flex-end;
-  gap: 0;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
 }
