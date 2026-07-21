@@ -1,58 +1,82 @@
 .container {
   background: #1a1a1a;
-  padding: 8px 12px;
-  border-bottom: 2px solid #333;
+  padding: 10px 16px;
+  border-bottom: 3px solid #444;
+  overflow-x: auto;
 }
 
 .lineRow,
 .branchRow {
   display: flex;
-  align-items: center;
-  gap: 2px;
-  overflow-x: auto;
-  padding: 4px 0;
+  align-items: flex-end;
+  gap: 0;
+  padding: 2px 0;
 }
 
 .branchRow {
-  margin-top: 2px;
+  margin-top: 4px;
   padding-left: 8px;
 }
 
 .branchLabel {
-  font-size: 0.55rem;
+  font-size: 0.5rem;
   color: #666;
   white-space: nowrap;
-  margin-right: 4px;
+  margin-right: 6px;
   min-width: 3.5em;
+  align-self: center;
 }
 
 .stationItem {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 1.8em;
+  min-width: 1.6em;
+  position: relative;
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: #333;
-  border: 1px solid #444;
-  transition: background 0.3s, box-shadow 0.3s;
+  border: 1px solid #555;
+  transition: background 0.4s, box-shadow 0.4s;
+  position: relative;
+  z-index: 2;
 }
 
 .dot.active {
-  background: #fff;
-  box-shadow: 0 0 4px #fff, 0 0 8px rgba(255, 255, 255, 0.5);
+  background: #ffffff;
+  border-color: #fff;
+  box-shadow:
+    0 0 6px #fff,
+    0 0 12px rgba(255, 255, 255, 0.6);
 }
 
 .stationName {
-  font-size: 0.5rem;
-  color: #888;
+  font-size: 0.45rem;
+  color: #999;
   writing-mode: vertical-rl;
   text-orientation: upright;
-  margin-top: 2px;
+  margin-top: 3px;
   line-height: 1;
   white-space: nowrap;
+  letter-spacing: -0.05em;
+}
+
+/* 駅間を繋ぐ線 */
+.stationItem::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: -50%;
+  width: 100%;
+  height: 2px;
+  background: #444;
+  z-index: 1;
+}
+
+.stationItem:first-child::before {
+  display: none;
 }
