@@ -1,0 +1,58 @@
+.container {
+  background: #1a1a1a;
+  padding: 8px 12px;
+  border-bottom: 2px solid #333;
+}
+
+.lineRow,
+.branchRow {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  overflow-x: auto;
+  padding: 4px 0;
+}
+
+.branchRow {
+  margin-top: 2px;
+  padding-left: 8px;
+}
+
+.branchLabel {
+  font-size: 0.55rem;
+  color: #666;
+  white-space: nowrap;
+  margin-right: 4px;
+  min-width: 3.5em;
+}
+
+.stationItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 1.8em;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #333;
+  border: 1px solid #444;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.dot.active {
+  background: #fff;
+  box-shadow: 0 0 4px #fff, 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.stationName {
+  font-size: 0.5rem;
+  color: #888;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  margin-top: 2px;
+  line-height: 1;
+  white-space: nowrap;
+}

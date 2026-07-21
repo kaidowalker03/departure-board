@@ -1,56 +1,63 @@
 "use client";
 
-import FlipText from "./FlipText";
+import { DepartureEntry, trainTypeStyles } from "@/types/departure";
 import styles from "./DepartureRow.module.css";
 
-export interface DepartureInfo {
-  time: string; // "06:00"
-  type: string; // "快特", "特急", "急行", "普通"
-  destination: string; // "三崎口"
-  note?: string; // "8両" etc.
-}
-
 interface DepartureRowProps {
-  departure: DepartureInfo | null;
-  label?: string; // "次発", "次々発"
+  departure: DepartureEntry | null;
+  label: string; // "先発", "次発", "次々発"
 }
-
-const typeColors: Record<string, string> = {
-  快特: "#e60012",
-  特急: "#0068b7",
-  急行: "#f5a623",
-  エアポート急行: "#f5a623",
-  普通: "#00a650",
-  "": "transparent",
-};
 
 export default function DepartureRow({ departure, label }: DepartureRowProps) {
-  const info = departure ?? { time: "", type: "", destination: "", note: "" };
-  const bgColor = typeColors[info.type] ?? "#333";
+  if (!departure) {
+    return (
+      <div className={styles.row}>
+        <div className={styles.label}>{label}</div>
+        <div className={styles.empty}>---</div>
+      </div>
+    );
+  }
+
+  const typeStyle = trainTypeStyles[departure.type];
 
   return (
     <div className={styles.row}>
-      {label && <div className={styles.label}>{label}</div>}
+      {/* 出発順序ラベル */}
+      <div className={styles.label}>{label}</div>
 
-      {/* 時刻 */}
-      <div className={styles.time}>
-        <FlipText text={info.time} maxLength={5} />
-      </div>
+      {/* 発車番線 */}
+      <div className={styles.track}>{departure.track}番線</div>
 
       {/* 種別 */}
-      <div className={styles.type} style={{ backgroundColor: bgColor }}>
-        <FlipText text={info.type} maxLength={5} />
+      <div
+        className={styles.type}
+        style={{
+          backgroundColor: typeStyle.bgColor,
+          color: typeStyle.textColor,
+          border: typeStyle.borderColor
+            ? `2px solid ${typeStyle.borderColor}`
+            : "none",
+        }}
+      >
+        {typeStyle.label}
       </div>
 
       {/* 行先 */}
       <div className={styles.destination}>
-        <FlipText text={info.destination} maxLength={6} />
+        <span className={styles.destJa}>{departure.destination}</span>
+        <span className={styles.destEn}>{departure.destinationEn}</span>
+      </div>
+
+      {/* 出発時刻 */}
+      <div className={styles.time}>{departure.time}</div>
+
+      {/* 両数 */}
+      <div className={styles.cars}>
+        {departure.cars}<span className={styles.carsUnit}>両</span>
       </div>
 
       {/* 備考 */}
-      <div className={styles.note}>
-        <FlipText text={info.note ?? ""} maxLength={4} />
-      </div>
+      <div className={styles.note}>{departure.note}</div>
     </div>
   );
 }

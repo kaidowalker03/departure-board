@@ -1,14 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { DepartureInfo } from "@/components/DepartureRow";
-
-interface TimetableEntry {
-  time: string;
-  type: string;
-  destination: string;
-  note?: string;
-}
+import { DepartureEntry } from "@/types/departure";
 
 function timeToMinutes(time: string): number {
   const [h, m] = time.split(":").map(Number);
@@ -24,10 +17,10 @@ function getCurrentMinutes(): number {
 }
 
 export function useDepartures(
-  timetable: TimetableEntry[],
+  timetable: DepartureEntry[],
   count: number = 3
-): DepartureInfo[] {
-  const [departures, setDepartures] = useState<DepartureInfo[]>([]);
+): DepartureEntry[] {
+  const [departures, setDepartures] = useState<DepartureEntry[]>([]);
 
   useEffect(() => {
     function update() {
@@ -39,21 +32,14 @@ export function useDepartures(
       );
 
       // count件取得（足りなければ翌日の始発から補完）
-      let result: TimetableEntry[];
+      let result: DepartureEntry[];
       if (upcoming.length >= count) {
         result = upcoming.slice(0, count);
       } else {
         result = [...upcoming, ...timetable.slice(0, count - upcoming.length)];
       }
 
-      setDepartures(
-        result.map((entry) => ({
-          time: entry.time,
-          type: entry.type,
-          destination: entry.destination,
-          note: entry.note ?? "",
-        }))
-      );
+      setDepartures(result);
     }
 
     update();

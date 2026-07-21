@@ -1,46 +1,59 @@
 "use client";
 
-import DepartureRow, { DepartureInfo } from "./DepartureRow";
+import { DepartureEntry } from "@/types/departure";
+import DepartureRow from "./DepartureRow";
+import StationLED from "./StationLED";
+import AnalogClock from "./AnalogClock";
 import styles from "./DepartureBoard.module.css";
 
 interface DepartureBoardProps {
-  stationName: string;
+  station: string;
   direction: string;
-  departures: (DepartureInfo | null)[];
+  directionEn: string;
+  tracks: number[];
+  departures: DepartureEntry[];
 }
 
 export default function DepartureBoard({
-  stationName,
+  station,
   direction,
+  directionEn,
+  tracks,
   departures,
 }: DepartureBoardProps) {
   const labels = ["先発", "次発", "次々発"];
+  const firstDeparture = departures[0];
 
   return (
     <div className={styles.board}>
-      {/* ヘッダー */}
+      {/* 番線・方面ヘッダー */}
       <div className={styles.header}>
-        <span className={styles.stationName}>{stationName}</span>
-        <span className={styles.direction}>{direction}</span>
+        <div className={styles.trackNumber}>{tracks[0]}</div>
+        <div className={styles.directionArea}>
+          <div className={styles.directionJa}>{direction}</div>
+          <div className={styles.directionEn}>{directionEn}</div>
+        </div>
+        <div className={styles.trackNumber}>{tracks[1]}</div>
       </div>
 
-      {/* 列ヘッダー */}
-      <div className={styles.columnHeader}>
-        <span className={styles.colLabel}></span>
-        <span className={styles.colTime}>時刻</span>
-        <span className={styles.colType}>種別</span>
-        <span className={styles.colDest}>行先</span>
-        <span className={styles.colNote}>備考</span>
-      </div>
+      {/* 停車駅LED */}
+      <StationLED stops={firstDeparture?.stops ?? []} />
 
-      {/* 3行表示 */}
-      {[0, 1, 2].map((i) => (
-        <DepartureRow
-          key={i}
-          departure={departures[i] ?? null}
-          label={labels[i]}
-        />
-      ))}
+      {/* 発車標本体 + 時計 */}
+      <div className={styles.body}>
+        <div className={styles.rows}>
+          {labels.map((label, i) => (
+            <DepartureRow
+              key={i}
+              departure={departures[i] ?? null}
+              label={label}
+            />
+          ))}
+        </div>
+        <div className={styles.clockArea}>
+          <AnalogClock />
+        </div>
+      </div>
     </div>
   );
 }
