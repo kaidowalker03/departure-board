@@ -1,0 +1,40 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #111;
+  border-bottom: 2px solid #000;
+  font-size: 2rem;
+  color: #fff;
+}
+
+.label {
+  font-size: 0.9rem;
+  color: #aaa;
+  width: 3em;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.time {
+  flex-shrink: 0;
+}
+
+.type {
+  flex-shrink: 0;
+  padding: 2px 4px;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: bold;
+}
+
+.destination {
+  flex-grow: 1;
+}
+
+.note {
+  flex-shrink: 0;
+  font-size: 1.4rem;
+  color: #ccc;
+}
