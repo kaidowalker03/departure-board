@@ -15,7 +15,6 @@ interface DepartureBoardProps {
 }
 
 export default function DepartureBoard({
-  station,
   direction,
   directionEn,
   tracks,
@@ -30,8 +29,8 @@ export default function DepartureBoard({
       <div className={styles.header}>
         <div className={styles.trackNumber}>{tracks[0]}</div>
         <div className={styles.directionArea}>
-          <div className={styles.directionJa}>{direction}</div>
-          <div className={styles.directionEn}>{directionEn}</div>
+          <span className={styles.directionJa}>{direction}</span>
+          <span className={styles.directionEn}>{directionEn}</span>
         </div>
         <div className={styles.trackNumber}>{tracks[1]}</div>
       </div>
@@ -39,15 +38,20 @@ export default function DepartureBoard({
       {/* 停車駅LED */}
       <StationLED stops={firstDeparture?.stops ?? []} />
 
+      {/* 白い区切り線 */}
+      <div className={styles.divider} />
+
       {/* 発車標本体 + 時計 */}
       <div className={styles.body}>
         <div className={styles.rows}>
           {labels.map((label, i) => (
-            <DepartureRow
-              key={i}
-              departure={departures[i] ?? null}
-              label={label}
-            />
+            <div key={i}>
+              <DepartureRow
+                departure={departures[i] ?? null}
+                label={label}
+              />
+              {i < 2 && <div className={styles.rowDivider} />}
+            </div>
           ))}
         </div>
         <div className={styles.clockArea}>

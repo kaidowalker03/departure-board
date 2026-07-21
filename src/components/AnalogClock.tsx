@@ -21,55 +21,72 @@ export default function AnalogClock() {
 
   return (
     <div className={styles.clock}>
-      <div className={styles.face}>
+      <svg viewBox="0 0 200 200" className={styles.svg}>
+        {/* 文字盤 */}
+        <circle cx="100" cy="100" r="95" fill="#fff" stroke="#333" strokeWidth="4" />
+
         {/* 時間の目盛り */}
-        {Array.from({ length: 12 }, (_, i) => (
-          <div
-            key={i}
-            className={styles.hourMark}
-            style={{ transform: `rotate(${i * 30}deg)` }}
-          />
-        ))}
-        {/* 分の目盛り */}
-        {Array.from({ length: 60 }, (_, i) => (
-          <div
-            key={`m${i}`}
-            className={styles.minuteMark}
-            style={{ transform: `rotate(${i * 6}deg)` }}
-          />
-        ))}
+        {Array.from({ length: 12 }, (_, i) => {
+          const angle = (i * 30 - 90) * (Math.PI / 180);
+          const x1 = 100 + 80 * Math.cos(angle);
+          const y1 = 100 + 80 * Math.sin(angle);
+          const x2 = 100 + 90 * Math.cos(angle);
+          const y2 = 100 + 90 * Math.sin(angle);
+          return (
+            <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#000" strokeWidth="3" />
+          );
+        })}
+
         {/* 数字 */}
         {Array.from({ length: 12 }, (_, i) => {
           const num = i === 0 ? 12 : i;
           const angle = (i * 30 - 90) * (Math.PI / 180);
-          const radius = 38;
-          const x = 50 + radius * Math.cos(angle);
-          const y = 50 + radius * Math.sin(angle);
+          const x = 100 + 68 * Math.cos(angle);
+          const y = 100 + 68 * Math.sin(angle);
           return (
-            <span
+            <text
               key={`n${i}`}
-              className={styles.number}
-              style={{ left: `${x}%`, top: `${y}%` }}
+              x={x}
+              y={y}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fontSize="14"
+              fontWeight="bold"
+              fill="#000"
+              fontFamily="serif"
             >
               {num}
-            </span>
+            </text>
           );
         })}
-        {/* 針 */}
-        <div
-          className={styles.hourHand}
-          style={{ transform: `rotate(${hourDeg}deg)` }}
+
+        {/* 時針 */}
+        <line
+          x1="100" y1="100"
+          x2={100 + 45 * Math.cos((hourDeg - 90) * Math.PI / 180)}
+          y2={100 + 45 * Math.sin((hourDeg - 90) * Math.PI / 180)}
+          stroke="#000" strokeWidth="4" strokeLinecap="round"
         />
-        <div
-          className={styles.minuteHand}
-          style={{ transform: `rotate(${minuteDeg}deg)` }}
+
+        {/* 分針 */}
+        <line
+          x1="100" y1="100"
+          x2={100 + 62 * Math.cos((minuteDeg - 90) * Math.PI / 180)}
+          y2={100 + 62 * Math.sin((minuteDeg - 90) * Math.PI / 180)}
+          stroke="#000" strokeWidth="3" strokeLinecap="round"
         />
-        <div
-          className={styles.secondHand}
-          style={{ transform: `rotate(${secondDeg}deg)` }}
+
+        {/* 秒針 */}
+        <line
+          x1="100" y1="100"
+          x2={100 + 70 * Math.cos((secondDeg - 90) * Math.PI / 180)}
+          y2={100 + 70 * Math.sin((secondDeg - 90) * Math.PI / 180)}
+          stroke="#cc0000" strokeWidth="1.5" strokeLinecap="round"
         />
-        <div className={styles.center} />
-      </div>
+
+        {/* 中心 */}
+        <circle cx="100" cy="100" r="4" fill="#000" />
+      </svg>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import styles from "./DepartureRow.module.css";
 
 interface DepartureRowProps {
   departure: DepartureEntry | null;
-  label: string; // "先発", "次発", "次々発"
+  label: string;
 }
 
 export default function DepartureRow({ departure, label }: DepartureRowProps) {
@@ -13,7 +13,6 @@ export default function DepartureRow({ departure, label }: DepartureRowProps) {
     return (
       <div className={styles.row}>
         <div className={styles.label}>{label}</div>
-        <div className={styles.empty}>---</div>
       </div>
     );
   }
@@ -22,10 +21,10 @@ export default function DepartureRow({ departure, label }: DepartureRowProps) {
 
   return (
     <div className={styles.row}>
-      {/* 出発順序ラベル */}
+      {/* 先発/次発/次々発 */}
       <div className={styles.label}>{label}</div>
 
-      {/* 発車番線 */}
+      {/* 番線 */}
       <div className={styles.track}>{departure.track}番線</div>
 
       {/* 種別 */}
@@ -36,7 +35,7 @@ export default function DepartureRow({ departure, label }: DepartureRowProps) {
           color: typeStyle.textColor,
           border: typeStyle.borderColor
             ? `2px solid ${typeStyle.borderColor}`
-            : "none",
+            : "2px solid transparent",
         }}
       >
         {typeStyle.label}
@@ -48,12 +47,13 @@ export default function DepartureRow({ departure, label }: DepartureRowProps) {
         <span className={styles.destEn}>{departure.destinationEn}</span>
       </div>
 
-      {/* 出発時刻 */}
+      {/* 時刻 */}
       <div className={styles.time}>{departure.time}</div>
 
       {/* 両数 */}
       <div className={styles.cars}>
-        {departure.cars}<span className={styles.carsUnit}>両</span>
+        <span className={styles.carsNum}>{departure.cars}</span>
+        <span className={styles.carsUnit}>両</span>
       </div>
 
       {/* 備考 */}
