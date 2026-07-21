@@ -11,7 +11,7 @@ export default function Home() {
   const departures = useDepartures(data.timetable, 3);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#3a3a3a]">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#2a2a2a]">
       <DepartureBoard
         station={data.station}
         direction={data.direction}
@@ -20,7 +20,7 @@ export default function Home() {
         departures={departures}
       />
 
-      <p className="mt-4 text-xs text-gray-500">
+      <p className="mt-4 text-xs text-gray-600">
         ※ ダイヤはサンプルデータです。実際のダイヤとは異なります。
       </p>
     </div>

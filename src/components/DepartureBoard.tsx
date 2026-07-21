@@ -29,31 +29,32 @@ export default function DepartureBoard({
       <div className={styles.header}>
         <div className={styles.trackNumber}>{tracks[0]}</div>
         <div className={styles.directionArea}>
-          <span className={styles.directionJa}>{direction}</span>
-          <span className={styles.directionEn}>{directionEn}</span>
+          <span className={styles.directionText}>
+            {direction}　{directionEn}
+          </span>
         </div>
         <div className={styles.trackNumber}>{tracks[1]}</div>
       </div>
 
-      {/* 停車駅LED */}
+      {/* 停車駅LED（黒背景、上下に白線） */}
+      <div className={styles.ledDividerTop} />
       <StationLED stops={firstDeparture?.stops ?? []} />
-
-      {/* 白い区切り線 */}
-      <div className={styles.divider} />
+      <div className={styles.ledDividerBottom} />
 
       {/* 発車標本体 + 時計 */}
       <div className={styles.body}>
         <div className={styles.rows}>
           {labels.map((label, i) => (
             <div key={i}>
+              {i > 0 && <div className={styles.rowDivider} />}
               <DepartureRow
                 departure={departures[i] ?? null}
                 label={label}
               />
-              {i < 2 && <div className={styles.rowDivider} />}
             </div>
           ))}
         </div>
+        <div className={styles.clockDivider} />
         <div className={styles.clockArea}>
           <AnalogClock />
         </div>

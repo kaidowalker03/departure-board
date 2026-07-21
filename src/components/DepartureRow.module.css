@@ -1,15 +1,15 @@
 .row {
   display: flex;
   align-items: center;
-  padding: 6px 12px;
-  background: #111;
+  padding: 10px 12px;
+  background: #3a3a3a;
   color: #fff;
-  flex: 1;
+  min-height: 68px;
 }
 
 /* 先発/次発/次々発 */
 .label {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: bold;
   color: #fff;
   width: 3.5em;
@@ -19,7 +19,7 @@
 
 /* 番線 */
 .track {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: bold;
   color: #fff;
   width: 3.5em;
@@ -27,11 +27,11 @@
   flex-shrink: 0;
 }
 
-/* 種別 - 大きく太く */
+/* 種別 - 大きく太く、白背景に色文字 */
 .type {
-  font-size: 2.2rem;
+  font-size: 2.4rem;
   font-weight: 900;
-  padding: 1px 10px;
+  padding: 2px 12px;
   min-width: 2.8em;
   text-align: center;
   flex-shrink: 0;
@@ -41,28 +41,30 @@
 /* 行先 */
 .destination {
   display: flex;
-  flex-direction: column;
-  min-width: 5em;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 7em;
   flex-shrink: 0;
-  margin-left: 8px;
+  margin-left: 10px;
 }
 
 .destJa {
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: bold;
   color: #fff;
   line-height: 1.1;
 }
 
 .destEn {
-  font-size: 0.55rem;
-  color: #999;
-  line-height: 1.3;
+  font-size: 0.6rem;
+  color: #aaa;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 /* 時刻 */
 .time {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: bold;
   color: #fff;
   min-width: 4em;
@@ -76,18 +78,19 @@
 /* 両数 */
 .cars {
   flex-shrink: 0;
-  min-width: 2.5em;
+  min-width: 3em;
   text-align: center;
+  margin-left: 4px;
 }
 
 .carsNum {
-  font-size: 1.6rem;
+  font-size: 2rem;
   font-weight: bold;
   color: #fff;
 }
 
 .carsUnit {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: #fff;
 }
 
@@ -95,7 +98,7 @@
 .note {
   font-size: 0.7rem;
   color: #ccc;
-  margin-left: 10px;
+  margin-left: 12px;
   flex-grow: 1;
   line-height: 1.4;
 }

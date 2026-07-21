@@ -1,20 +1,16 @@
 .board {
-  background: #2d2d2d;
+  background: #3a3a3a;
   overflow: hidden;
   width: 100%;
   max-width: 1300px;
-  aspect-ratio: 16 / 7;
-  display: flex;
-  flex-direction: column;
 }
 
 /* 番線・方面ヘッダー */
 .header {
   display: flex;
   align-items: center;
-  padding: 8px 16px;
-  background: #2d2d2d;
-  flex-shrink: 0;
+  padding: 10px 16px;
+  background: #3a3a3a;
 }
 
 .trackNumber {
@@ -22,7 +18,7 @@
   font-weight: bold;
   color: #fff;
   border: 3px solid #fff;
-  border-radius: 6px;
+  border-radius: 4px;
   width: 1.5em;
   height: 1.5em;
   display: flex;
@@ -35,28 +31,23 @@
 .directionArea {
   flex-grow: 1;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
 }
 
-.directionJa {
-  font-size: 1.1rem;
+.directionText {
+  font-size: 0.95rem;
   color: #fff;
-  letter-spacing: 0.4em;
+  letter-spacing: 0.15em;
 }
 
-.directionEn {
-  font-size: 0.65rem;
-  color: #bbb;
-  letter-spacing: 0.08em;
+/* 停車駅LEDの上下の白線 */
+.ledDividerTop {
+  height: 2px;
+  background: #fff;
 }
 
-/* 白い区切り線（ヘッダーと停車駅の間） */
-.divider {
+.ledDividerBottom {
   height: 3px;
   background: #fff;
-  flex-shrink: 0;
 }
 
 /* 行間の区切り線 */
@@ -65,26 +56,30 @@
   background: #fff;
 }
 
+/* 時計との区切り縦線 */
+.clockDivider {
+  width: 2px;
+  background: #fff;
+  flex-shrink: 0;
+}
+
 /* 本体部分（発車標 + 時計） */
 .body {
   display: flex;
-  flex-grow: 1;
-  background: #111;
+  background: #3a3a3a;
 }
 
 .rows {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
 .clockArea {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 20px;
-  background: #111;
-  border-left: 2px solid #fff;
+  padding: 16px 24px;
+  background: #3a3a3a;
   flex-shrink: 0;
 }

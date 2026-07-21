@@ -44,7 +44,7 @@ export default function DepartureRow({ departure, label }: DepartureRowProps) {
         <FlipText text={typeStyle.label} />
       </div>
 
-      {/* 行先 */}
+      {/* 行先（日本語 + 横に英語） */}
       <div className={styles.destination}>
         <span className={styles.destJa}>
           <FlipText text={departure.destination} />
