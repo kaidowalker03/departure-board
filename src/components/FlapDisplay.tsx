@@ -12,8 +12,6 @@ interface FlapDisplayProps {
 
 /**
  * 駅名を表示用に分解する
- * - 「京急」で始まる場合: prefix="京急", body=残り
- * - それ以外: prefix="", body=全体
  */
 function parseStationName(name: string): { prefix: string; body: string } {
   if (name.startsWith("京急")) {
@@ -26,7 +24,7 @@ function parseStationName(name: string): { prefix: string; body: string } {
 }
 
 /**
- * 本体文字数に応じたCSSクラスを返す
+ * 本体文字数に応じたCSSクラス
  */
 function getCharsClass(body: string): string {
   const len = body.length;
@@ -36,18 +34,36 @@ function getCharsClass(body: string): string {
   return styles.chars5plus;
 }
 
+/**
+ * 英語を長い場合に2行に分割
+ * スペースで区切って、だいたい半分で折る
+ */
+function formatEn(en: string): string {
+  if (!en || en.length <= 12) return en;
+  // スペースで分割して2行に
+  const parts = en.split(/[-\s]/);
+  if (parts.length >= 2) {
+    const mid = Math.ceil(parts.length / 2);
+    const line1 = parts.slice(0, mid).join(" ");
+    const line2 = parts.slice(mid).join(" ");
+    return `${line1}\n${line2}`;
+  }
+  return en;
+}
+
 function FlapContent({ ja, en }: { ja: string; en: string }) {
   const { prefix, body } = parseStationName(ja);
   const charsClass = getCharsClass(body);
+  const formattedEn = formatEn(en);
 
   return (
-    <>
-      <div className={styles.jaRow}>
+    <span className={styles.flapInner}>
+      <span className={styles.jaArea}>
         {prefix && <span className={styles.prefix}>{prefix}</span>}
         <span className={`${styles.jaText} ${charsClass}`}>{body}</span>
-      </div>
-      <div className={styles.enText}>{en}</div>
-    </>
+      </span>
+      {formattedEn && <span className={styles.enArea}>{formattedEn}</span>}
+    </span>
   );
 }
 
@@ -88,12 +104,10 @@ export default function FlapDisplay({ text, textEn = "", speed = 80 }: FlapDispl
       const newJa = entry.ja || "　";
       const newEn = entry.en;
 
-      // 古い板を倒す
       setOutgoingJa(prevJa);
       setOutgoingEn(prevEn);
       setFlipId((id) => id + 1);
 
-      // 新しい文字を背面に
       setCurrentJa(newJa);
       setCurrentEn(newEn);
 
@@ -115,12 +129,10 @@ export default function FlapDisplay({ text, textEn = "", speed = 80 }: FlapDispl
 
   return (
     <span className={styles.container}>
-      {/* 新しい文字（背面） */}
       <span className={styles.current}>
         <FlapContent ja={currentJa} en={currentEn} />
       </span>
 
-      {/* 古い文字が倒れ落ちる板 */}
       {outgoingJa !== null && (
         <span key={flipId} className={styles.flipOut}>
           <FlapContent ja={outgoingJa} en={outgoingEn} />
