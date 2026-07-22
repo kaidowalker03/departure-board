@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# large frame files (use flaps/ for extracted frames only)
+/public/frames/
+/public/*.mov
+/public/ffmpeg.exe

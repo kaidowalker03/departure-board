@@ -1,120 +1,16 @@
 .container {
-  position: relative;
   display: inline-block;
-  perspective: 200px;
-  width: 12em;
-  height: 2.6em;
   flex-shrink: 0;
+  width: 250px;
+  height: 100px;
+  overflow: hidden;
 }
 
-/* 新しい文字（背面に常に表示） */
-.current {
-  position: absolute;
-  top: 0;
-  left: 0;
+.flapImage {
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  background: #2e2e2e;
-  padding: 2px 6px;
-  box-sizing: border-box;
-  border: 1px solid #444;
-}
-
-/* 古い文字が倒れ落ちる板 */
-.flipOut {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  background: #2e2e2e;
-  padding: 2px 6px;
-  box-sizing: border-box;
-  border: 1px solid #444;
-  transform-origin: bottom center;
-  animation: flapDown 0.1s ease-in forwards;
-  z-index: 2;
-}
-
-/* 板の中のレイアウト: 日本語(左) + 英語(右) 横並び */
-.flapInner {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 4px;
-}
-
-/* 日本語エリア */
-.jaArea {
-  display: flex;
-  align-items: baseline;
-  flex-shrink: 0;
-}
-
-/* 京急プレフィックス（小さい文字） */
-.prefix {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #fff;
-  line-height: 1;
-  flex-shrink: 0;
-}
-
-/* 駅名本体 */
-.jaText {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #fff;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-/* 2文字: 字間広め */
-.jaText.chars2 {
-  letter-spacing: 0.8em;
-}
-
-/* 3文字: 通常 */
-.jaText.chars3 {
-  letter-spacing: 0.15em;
-}
-
-/* 4文字: 少し詰め */
-.jaText.chars4 {
-  letter-spacing: 0em;
-}
-
-/* 5文字以上: さらに詰め・少し小さく */
-.jaText.chars5plus {
-  font-size: 1.6rem;
-  letter-spacing: -0.05em;
-}
-
-/* 英語エリア（日本語の右横） */
-.enArea {
-  font-size: 0.75rem;
-  color: #ddd;
-  line-height: 1.3;
-  white-space: pre-wrap;
-  word-break: break-word;
-  flex-shrink: 1;
-  min-width: 0;
-}
-
-@keyframes flapDown {
-  0% {
-    transform: rotateX(0deg);
-    opacity: 1;
-  }
-  60% {
-    opacity: 1;
-  }
-  100% {
-    transform: rotateX(-90deg);
-    opacity: 0;
-  }
+  object-fit: contain;
+  display: block;
+  user-select: none;
+  pointer-events: none;
 }

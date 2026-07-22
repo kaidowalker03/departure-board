@@ -1,143 +1,115 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { getFlapSequence } from "@/data/flap-destinations";
+import { getFlapIndex } from "@/data/flap-destinations";
 import styles from "./FlapDisplay.module.css";
 
 interface FlapDisplayProps {
   text: string;
   textEn?: string;
-  speed?: number;
+  speed?: number; // ms per animation frame
 }
+
+// 回転アニメーションのフレーム数
+const ANIM_FRAMES = 9;
 
 /**
- * 駅名を表示用に分解する
+ * 現在のフラップ番号から目的のフラップ番号までの経路を取得
+ * （一方向にしか回らない）
  */
-function parseStationName(name: string): { prefix: string; body: string } {
-  if (name.startsWith("京急")) {
-    return { prefix: "京急", body: name.slice(2) };
+function getFlapRoute(fromIndex: number, toIndex: number): number[] {
+  if (fromIndex === toIndex) return [];
+
+  const route: number[] = [];
+  const total = 56;
+  let current = (fromIndex + 1) % total;
+
+  while (current !== toIndex) {
+    route.push(current);
+    current = (current + 1) % total;
   }
-  if (name.startsWith("京成")) {
-    return { prefix: "京成", body: name.slice(2) };
-  }
-  return { prefix: "", body: name };
+  route.push(toIndex);
+  return route;
 }
 
-/**
- * 本体文字数に応じたCSSクラス
- */
-function getCharsClass(body: string): string {
-  const len = body.length;
-  if (len <= 2) return styles.chars2;
-  if (len === 3) return styles.chars3;
-  if (len === 4) return styles.chars4;
-  return styles.chars5plus;
-}
-
-/**
- * 英語を長い場合に2行に分割
- * スペースで区切って、だいたい半分で折る
- */
-function formatEn(en: string): string {
-  if (!en || en.length <= 12) return en;
-  // スペースで分割して2行に
-  const parts = en.split(/[-\s]/);
-  if (parts.length >= 2) {
-    const mid = Math.ceil(parts.length / 2);
-    const line1 = parts.slice(0, mid).join(" ");
-    const line2 = parts.slice(mid).join(" ");
-    return `${line1}\n${line2}`;
-  }
-  return en;
-}
-
-function FlapContent({ ja, en }: { ja: string; en: string }) {
-  const { prefix, body } = parseStationName(ja);
-  const charsClass = getCharsClass(body);
-  const formattedEn = formatEn(en);
-
-  return (
-    <span className={styles.flapInner}>
-      <span className={styles.jaArea}>
-        {prefix && <span className={styles.prefix}>{prefix}</span>}
-        <span className={`${styles.jaText} ${charsClass}`}>{body}</span>
-      </span>
-      {formattedEn && <span className={styles.enArea}>{formattedEn}</span>}
-    </span>
-  );
-}
-
-export default function FlapDisplay({ text, textEn = "", speed = 80 }: FlapDisplayProps) {
-  const [currentJa, setCurrentJa] = useState(text);
-  const [currentEn, setCurrentEn] = useState(textEn);
-  const [outgoingJa, setOutgoingJa] = useState<string | null>(null);
-  const [outgoingEn, setOutgoingEn] = useState("");
-  const [flipId, setFlipId] = useState(0);
+export default function FlapDisplay({ text, speed = 30 }: FlapDisplayProps) {
+  // フラップ番号（0-indexed: 0=flap_01, 1=flap_02, ...）
+  const [currentFlap, setCurrentFlap] = useState(() => getFlapIndex(text));
+  const [displaySrc, setDisplaySrc] = useState(`/flaps/ekimei/flap_${String(getFlapIndex(text) + 1).padStart(2, "0")}.png`);
+  const [isAnimating, setIsAnimating] = useState(false);
   const prevText = useRef(text);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const animTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (text === prevText.current) return;
 
-    const sequence = getFlapSequence(prevText.current, text);
+    const fromIndex = getFlapIndex(prevText.current);
+    const toIndex = getFlapIndex(text);
     prevText.current = text;
 
-    if (sequence.length === 0) {
-      setCurrentJa(text);
-      setCurrentEn(textEn);
-      return;
-    }
+    if (fromIndex === toIndex) return;
 
+    const route = getFlapRoute(fromIndex, toIndex);
+    if (route.length === 0) return;
+
+    // 既存アニメーションをキャンセル
     if (timerRef.current) clearTimeout(timerRef.current);
+    if (animTimerRef.current) clearTimeout(animTimerRef.current);
 
-    let index = 0;
-    let prevJa = currentJa;
-    let prevEn = currentEn;
+    setIsAnimating(true);
+    let routeIndex = 0;
 
-    function step() {
-      if (index >= sequence.length) {
-        setOutgoingJa(null);
+    function animateToNextFlap() {
+      if (routeIndex >= route.length) {
+        setIsAnimating(false);
         return;
       }
 
-      const entry = sequence[index];
-      const newJa = entry.ja || "　";
-      const newEn = entry.en;
+      const targetFlap = route[routeIndex];
+      let animFrame = 0;
 
-      setOutgoingJa(prevJa);
-      setOutgoingEn(prevEn);
-      setFlipId((id) => id + 1);
+      // 回転アニメーション（9フレーム）
+      function showAnimFrame() {
+        if (animFrame < ANIM_FRAMES) {
+          const src = `/flaps/ekimei_anim/rotate_${String(animFrame + 1).padStart(2, "0")}.png`;
+          setDisplaySrc(src);
+          animFrame++;
+          animTimerRef.current = setTimeout(showAnimFrame, speed);
+        } else {
+          // 停止フレームを表示
+          const flapNum = targetFlap + 1; // 1-indexed
+          const src = `/flaps/ekimei/flap_${String(flapNum).padStart(2, "0")}.png`;
+          setDisplaySrc(src);
+          setCurrentFlap(targetFlap);
+          routeIndex++;
 
-      setCurrentJa(newJa);
-      setCurrentEn(newEn);
+          // 次のフラップへ（最後は少し間を置く）
+          const delay = routeIndex >= route.length ? 0 : 20;
+          timerRef.current = setTimeout(animateToNextFlap, delay);
+        }
+      }
 
-      prevJa = newJa;
-      prevEn = newEn;
-      index++;
-
-      const delay = index >= sequence.length ? speed * 2 : speed;
-      timerRef.current = setTimeout(step, delay);
+      showAnimFrame();
     }
 
-    step();
+    animateToNextFlap();
 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
+      if (animTimerRef.current) clearTimeout(animTimerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [text, textEn, speed]);
+  }, [text, speed]);
 
   return (
     <span className={styles.container}>
-      <span className={styles.current}>
-        <FlapContent ja={currentJa} en={currentEn} />
-      </span>
-
-      {outgoingJa !== null && (
-        <span key={flipId} className={styles.flipOut}>
-          <FlapContent ja={outgoingJa} en={outgoingEn} />
-        </span>
-      )}
+      <img
+        src={displaySrc}
+        alt={text}
+        className={styles.flapImage}
+        draggable={false}
+      />
     </span>
   );
 }
