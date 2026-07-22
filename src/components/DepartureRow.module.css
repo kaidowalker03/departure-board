@@ -40,26 +40,8 @@
 
 /* 行先 */
 .destination {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  min-width: 7em;
   flex-shrink: 0;
-  margin-left: 10px;
-}
-
-.destJa {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #fff;
-  line-height: 1.1;
-}
-
-.destEn {
-  font-size: 0.6rem;
-  color: #aaa;
-  line-height: 1.2;
-  white-space: nowrap;
+  margin-left: 8px;
 }
 
 /* 時刻 */

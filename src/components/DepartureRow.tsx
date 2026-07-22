@@ -45,12 +45,12 @@ export default function DepartureRow({ departure, label }: DepartureRowProps) {
         <FlipText text={typeStyle.label} />
       </div>
 
-      {/* 行先（パタパタで途中駅を通過しながら表示） */}
+      {/* 行先（パタパタ + 英語を板内に含む） */}
       <div className={styles.destination}>
         <FlapDisplay
           text={departure.destination}
           textEn={departure.destinationEn}
-          speed={60}
+          speed={70}
         />
       </div>
 
