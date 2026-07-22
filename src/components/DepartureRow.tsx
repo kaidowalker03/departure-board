@@ -2,6 +2,7 @@
 
 import { DepartureEntry, trainTypeStyles } from "@/types/departure";
 import FlipText from "./FlipText";
+import FlapDisplay from "./FlapDisplay";
 import styles from "./DepartureRow.module.css";
 
 interface DepartureRowProps {
@@ -44,12 +45,13 @@ export default function DepartureRow({ departure, label }: DepartureRowProps) {
         <FlipText text={typeStyle.label} />
       </div>
 
-      {/* 行先（日本語 + 横に英語） */}
+      {/* 行先（パタパタで途中駅を通過しながら表示） */}
       <div className={styles.destination}>
-        <span className={styles.destJa}>
-          <FlipText text={departure.destination} />
-        </span>
-        <span className={styles.destEn}>{departure.destinationEn}</span>
+        <FlapDisplay
+          text={departure.destination}
+          textEn={departure.destinationEn}
+          speed={60}
+        />
       </div>
 
       {/* 時刻 */}
