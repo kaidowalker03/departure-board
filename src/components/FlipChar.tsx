@@ -9,45 +9,62 @@ interface FlipCharProps {
 }
 
 export default function FlipChar({ char, delay = 0 }: FlipCharProps) {
-  const [displayChar, setDisplayChar] = useState(char);
-  const [nextChar, setNextChar] = useState(char);
-  const [flipping, setFlipping] = useState(false);
-  const prevRef = useRef(char);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [current, setCurrent] = useState(char);
+  const [next, setNext] = useState(char);
+  const [isFlipping, setIsFlipping] = useState(false);
+  const prevChar = useRef(char);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (char === prevRef.current) return;
+    if (char === prevChar.current) return;
 
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (timerRef.current) clearTimeout(timerRef.current);
 
-    timeoutRef.current = setTimeout(() => {
-      setNextChar(char);
-      setFlipping(true);
+    timerRef.current = setTimeout(() => {
+      setNext(char);
+      setIsFlipping(true);
     }, delay);
 
     return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, [char, delay]);
 
-  const handleAnimationEnd = () => {
-    setDisplayChar(nextChar);
-    setFlipping(false);
-    prevRef.current = nextChar;
+  const handleFlipComplete = () => {
+    setCurrent(next);
+    setIsFlipping(false);
+    prevChar.current = next;
   };
 
   return (
-    <span className={styles.char}>
-      <span className={styles.static}>{displayChar}</span>
-      {flipping && (
-        <>
-          <span className={styles.flipOut} onAnimationEnd={handleAnimationEnd}>
-            {displayChar}
-          </span>
-          <span className={styles.flipIn}>
-            {nextChar}
-          </span>
-        </>
+    <span className={styles.flipContainer}>
+      {/* 上半分 - 現在の文字 */}
+      <span className={styles.upper}>
+        <span className={styles.upperText}>{current}</span>
+      </span>
+
+      {/* 下半分 - 次の文字（フリップ中に見える） */}
+      <span className={styles.lower}>
+        <span className={styles.lowerText}>
+          {isFlipping ? next : current}
+        </span>
+      </span>
+
+      {/* フリップする上半分（現在の文字が倒れ落ちる） */}
+      {isFlipping && (
+        <span
+          className={styles.flapFront}
+          onAnimationEnd={handleFlipComplete}
+        >
+          <span className={styles.upperText}>{current}</span>
+        </span>
+      )}
+
+      {/* フリップする下半分（次の文字が起き上がる） */}
+      {isFlipping && (
+        <span className={styles.flapBack}>
+          <span className={styles.lowerText}>{next}</span>
+        </span>
       )}
     </span>
   );
