@@ -95,7 +95,7 @@ export default function FlapDisplay({ text, speed = 30 }: FlapDisplayProps) {
         animFrame = 0;
 
         if (routeIdx < route.length) {
-          timerRef.current = setTimeout(tick, 20);
+          timerRef.current = setTimeout(tick, 10);
         } else {
           animatingRef.current = false;
         }

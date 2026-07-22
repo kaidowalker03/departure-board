@@ -49,7 +49,7 @@ export default function DepartureRow({ departure, label }: DepartureRowProps) {
       <div className={styles.destination}>
         <FlapDisplay
           text={departure.destination}
-          speed={30}
+          speed={15}
         />
       </div>
 
