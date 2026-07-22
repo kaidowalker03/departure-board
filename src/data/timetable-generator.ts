@@ -77,12 +77,12 @@ const patterns: TrainPattern[] = [
   },
   {
     type: "特急",
-    destination: "横須賀中央",
-    destinationEn: "Yokosuka-chūō",
+    destination: "京急久里浜",
+    destinationEn: "Keikyu Kurihama",
     track: 5,
     cars: 8,
     note: "",
-    stops: ["神奈川新町", "横浜", "上大岡", "金沢文庫", "金沢八景", "横須賀中央"],
+    stops: ["神奈川新町", "横浜", "上大岡", "金沢文庫", "金沢八景", "横須賀中央", "堀ノ内", "京急久里浜"],
   },
 ];
 

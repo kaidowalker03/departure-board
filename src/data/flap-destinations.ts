@@ -70,7 +70,10 @@ export const destinationFlaps: FlapEntry[] = [
  */
 export function getFlapIndex(destination: string): number {
   const index = destinationFlaps.findIndex((f) => f.ja === destination);
-  return index >= 0 ? index : 0;
+  if (index >= 0) return index;
+  // 部分一致で探す（京急久里浜 → 京急久里浜）
+  const partialIndex = destinationFlaps.findIndex((f) => f.ja && destination.includes(f.ja));
+  return partialIndex >= 0 ? partialIndex : 0;
 }
 
 /**

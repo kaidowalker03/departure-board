@@ -6,17 +6,11 @@ import styles from "./FlapDisplay.module.css";
 
 interface FlapDisplayProps {
   text: string;
-  textEn?: string;
   speed?: number; // ms per animation frame
 }
 
-// 回転アニメーションのフレーム数
 const ANIM_FRAMES = 9;
 
-/**
- * 現在のフラップ番号から目的のフラップ番号までの経路を取得
- * （一方向にしか回らない）
- */
 function getFlapRoute(fromIndex: number, toIndex: number): number[] {
   if (fromIndex === toIndex) return [];
 
@@ -32,19 +26,34 @@ function getFlapRoute(fromIndex: number, toIndex: number): number[] {
   return route;
 }
 
+function getFlapSrc(flapIndex: number): string {
+  const flapNum = flapIndex + 1;
+  return `/flaps/ekimei/flap_${String(flapNum).padStart(2, "0")}.png`;
+}
+
 export default function FlapDisplay({ text, speed = 30 }: FlapDisplayProps) {
-  // フラップ番号（0-indexed: 0=flap_01, 1=flap_02, ...）
-  const [currentFlap, setCurrentFlap] = useState(() => getFlapIndex(text));
-  const [displaySrc, setDisplaySrc] = useState(`/flaps/ekimei/flap_${String(getFlapIndex(text) + 1).padStart(2, "0")}.png`);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const initialIndex = getFlapIndex(text);
+  const [displaySrc, setDisplaySrc] = useState(getFlapSrc(initialIndex));
+  const currentFlapRef = useRef(initialIndex);
   const prevText = useRef(text);
+  const initializedRef = useRef(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const animTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    // 初回は静止画を表示するだけ（アニメーションしない）
+    if (!initializedRef.current) {
+      initializedRef.current = true;
+      const idx = getFlapIndex(text);
+      currentFlapRef.current = idx;
+      setDisplaySrc(getFlapSrc(idx));
+      prevText.current = text;
+      return;
+    }
+
     if (text === prevText.current) return;
 
-    const fromIndex = getFlapIndex(prevText.current);
+    const fromIndex = currentFlapRef.current;
     const toIndex = getFlapIndex(text);
     prevText.current = text;
 
@@ -57,19 +66,16 @@ export default function FlapDisplay({ text, speed = 30 }: FlapDisplayProps) {
     if (timerRef.current) clearTimeout(timerRef.current);
     if (animTimerRef.current) clearTimeout(animTimerRef.current);
 
-    setIsAnimating(true);
     let routeIndex = 0;
 
     function animateToNextFlap() {
       if (routeIndex >= route.length) {
-        setIsAnimating(false);
         return;
       }
 
       const targetFlap = route[routeIndex];
       let animFrame = 0;
 
-      // 回転アニメーション（9フレーム）
       function showAnimFrame() {
         if (animFrame < ANIM_FRAMES) {
           const src = `/flaps/ekimei_anim/rotate_${String(animFrame + 1).padStart(2, "0")}.png`;
@@ -77,16 +83,15 @@ export default function FlapDisplay({ text, speed = 30 }: FlapDisplayProps) {
           animFrame++;
           animTimerRef.current = setTimeout(showAnimFrame, speed);
         } else {
-          // 停止フレームを表示
-          const flapNum = targetFlap + 1; // 1-indexed
-          const src = `/flaps/ekimei/flap_${String(flapNum).padStart(2, "0")}.png`;
-          setDisplaySrc(src);
-          setCurrentFlap(targetFlap);
+          // 停止フレーム
+          setDisplaySrc(getFlapSrc(targetFlap));
+          currentFlapRef.current = targetFlap;
           routeIndex++;
 
-          // 次のフラップへ（最後は少し間を置く）
-          const delay = routeIndex >= route.length ? 0 : 20;
-          timerRef.current = setTimeout(animateToNextFlap, delay);
+          // 次のフラップへ
+          if (routeIndex < route.length) {
+            timerRef.current = setTimeout(animateToNextFlap, 20);
+          }
         }
       }
 
