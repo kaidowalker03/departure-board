@@ -3,120 +3,56 @@
   display: inline-flex;
   align-items: baseline;
   gap: 6px;
-  min-width: 7em;
-  height: 2.4em;
   perspective: 200px;
 }
 
-.text {
-  display: block;
+.current {
   font-size: 2rem;
   font-weight: bold;
   color: #fff;
-  line-height: 2.4em;
+  line-height: 1.2;
   white-space: nowrap;
-  padding: 0 4px;
+  min-width: 4em;
+  display: inline-block;
+  background: #2e2e2e;
+  padding: 2px 4px;
 }
 
-/* 上半分（静止） */
-.upper {
+.flipOut {
   position: absolute;
   top: 0;
   left: 0;
-  width: 85%;
-  height: 50%;
-  overflow: hidden;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #fff;
+  line-height: 1.2;
+  white-space: nowrap;
+  min-width: 4em;
+  display: inline-block;
   background: #2e2e2e;
-  border-bottom: 1px solid #1a1a1a;
-  z-index: 1;
-}
-
-.upper .text {
-  position: relative;
-  top: 0;
-}
-
-/* 下半分（静止） */
-.lower {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 85%;
-  height: 50%;
-  overflow: hidden;
-  background: #2e2e2e;
-  z-index: 1;
-}
-
-.lower .text {
-  position: relative;
-  top: -1.2em;
-}
-
-/* フリップする上半分（倒れ落ちる） */
-.flapTop {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 85%;
-  height: 50%;
-  overflow: hidden;
-  background: #2e2e2e;
-  border-bottom: 1px solid #1a1a1a;
+  padding: 2px 4px;
   transform-origin: bottom center;
-  z-index: 3;
   animation: flapDown 0.12s ease-in forwards;
-}
-
-.flapTop .text {
-  position: relative;
-  top: 0;
-}
-
-/* フリップする下半分（起き上がる） */
-.flapBottom {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 85%;
-  height: 50%;
-  overflow: hidden;
-  background: #2e2e2e;
-  transform-origin: top center;
-  transform: rotateX(90deg);
   z-index: 2;
-  animation: flapUp 0.1s 0.08s ease-out forwards;
 }
 
-.flapBottom .text {
-  position: relative;
-  top: -1.2em;
-}
-
-/* 英語表示 */
 .en {
-  position: absolute;
-  bottom: 4px;
-  left: 86%;
   font-size: 0.6rem;
   color: #aaa;
   white-space: nowrap;
+  align-self: center;
 }
 
 @keyframes flapDown {
   0% {
     transform: rotateX(0deg);
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
   }
   100% {
     transform: rotateX(-90deg);
-  }
-}
-
-@keyframes flapUp {
-  0% {
-    transform: rotateX(90deg);
-  }
-  100% {
-    transform: rotateX(0deg);
+    opacity: 0;
   }
 }

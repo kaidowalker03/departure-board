@@ -10,8 +10,7 @@ interface FlipCharProps {
 
 export default function FlipChar({ char, delay = 0 }: FlipCharProps) {
   const [current, setCurrent] = useState(char);
-  const [next, setNext] = useState(char);
-  const [isFlipping, setIsFlipping] = useState(false);
+  const [prev, setPrev] = useState<string | null>(null);
   const prevChar = useRef(char);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -21,8 +20,9 @@ export default function FlipChar({ char, delay = 0 }: FlipCharProps) {
     if (timerRef.current) clearTimeout(timerRef.current);
 
     timerRef.current = setTimeout(() => {
-      setNext(char);
-      setIsFlipping(true);
+      setPrev(prevChar.current);
+      setCurrent(char);
+      prevChar.current = char;
     }, delay);
 
     return () => {
@@ -30,40 +30,19 @@ export default function FlipChar({ char, delay = 0 }: FlipCharProps) {
     };
   }, [char, delay]);
 
-  const handleFlipComplete = () => {
-    setCurrent(next);
-    setIsFlipping(false);
-    prevChar.current = next;
+  const handleAnimationEnd = () => {
+    setPrev(null);
   };
 
   return (
     <span className={styles.flipContainer}>
-      {/* 上半分 - 現在の文字 */}
-      <span className={styles.upper}>
-        <span className={styles.upperText}>{current}</span>
-      </span>
+      {/* 現在の文字（常に表示） */}
+      <span className={styles.staticText}>{current}</span>
 
-      {/* 下半分 - 次の文字（フリップ中に見える） */}
-      <span className={styles.lower}>
-        <span className={styles.lowerText}>
-          {isFlipping ? next : current}
-        </span>
-      </span>
-
-      {/* フリップする上半分（現在の文字が倒れ落ちる） */}
-      {isFlipping && (
-        <span
-          className={styles.flapFront}
-          onAnimationEnd={handleFlipComplete}
-        >
-          <span className={styles.upperText}>{current}</span>
-        </span>
-      )}
-
-      {/* フリップする下半分（次の文字が起き上がる） */}
-      {isFlipping && (
-        <span className={styles.flapBack}>
-          <span className={styles.lowerText}>{next}</span>
+      {/* 古い文字が倒れ落ちるアニメーション */}
+      {prev !== null && (
+        <span className={styles.flipOut} onAnimationEnd={handleAnimationEnd}>
+          {prev}
         </span>
       )}
     </span>
