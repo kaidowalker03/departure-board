@@ -44,3 +44,4 @@ next-env.d.ts
 /public/frames/
 /public/*.mov
 /public/ffmpeg.exe
+/public/sample/

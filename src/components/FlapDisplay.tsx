@@ -30,9 +30,19 @@ function getFlapSrc(flapIndex: number): string {
   return `/flaps/ekimei/flap_${String(flapIndex + 1).padStart(2, "0")}.png`;
 }
 
+/**
+ * フラップ遷移時の回転アニメーションフレームのパスを返す
+ * targetFlapIndex: 遷移先のフラップ(0-indexed)
+ * frameNum: 1~9
+ */
+function getRotateSrc(targetFlapIndex: number, frameNum: number): string {
+  const flapNum = targetFlapIndex + 1; // 1-indexed
+  return `/flaps/ekimei_anim/to_${String(flapNum).padStart(2, "0")}/r_${String(frameNum).padStart(2, "0")}.png`;
+}
+
 export default function FlapDisplay({ text, speed = 30 }: FlapDisplayProps) {
   const [src, setSrc] = useState("/flaps/ekimei/flap_01.png");
-  const currentFlapRef = useRef<number>(-1); // -1 = uninitialized
+  const currentFlapRef = useRef<number>(-1);
   const animatingRef = useRef(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -71,8 +81,9 @@ export default function FlapDisplay({ text, speed = 30 }: FlapDisplayProps) {
       if (!animatingRef.current) return;
 
       if (animFrame < ANIM_FRAMES) {
-        // 回転中フレーム
-        setSrc(`/flaps/ekimei_anim/rotate_${String(animFrame + 1).padStart(2, "0")}.png`);
+        // 回転中フレーム（遷移先フラップ固有の画像）
+        const targetFlap = route[routeIdx];
+        setSrc(getRotateSrc(targetFlap, animFrame + 1));
         animFrame++;
         timerRef.current = setTimeout(tick, speed);
       } else {
@@ -84,10 +95,8 @@ export default function FlapDisplay({ text, speed = 30 }: FlapDisplayProps) {
         animFrame = 0;
 
         if (routeIdx < route.length) {
-          // 次のフラップへ
           timerRef.current = setTimeout(tick, 20);
         } else {
-          // 完了
           animatingRef.current = false;
         }
       }
