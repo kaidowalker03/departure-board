@@ -1,0 +1,55 @@
+.boardContainer {
+  position: relative;
+  width: 100%;
+  max-width: 1300px;
+}
+
+.bgImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  user-select: none;
+}
+
+/* 停車駅LEDの丸を重ねるエリア（画像内のLED位置に合わせる） */
+.ledOverlay {
+  position: absolute;
+  /* 画像内の停車駅LED丸の位置に合わせて調整 */
+  top: 37%;
+  left: 2%;
+  right: 2%;
+  height: 5%;
+}
+
+/* パタパタ3行 + 時計を重ねるエリア */
+.dynamicArea {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /* 画像の下部（白線の下）にパタパタを重ねる */
+  height: 56%;
+  display: flex;
+}
+
+.rows {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.clockDivider {
+  width: 2px;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.clockArea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  flex-shrink: 0;
+  width: 14%;
+}
