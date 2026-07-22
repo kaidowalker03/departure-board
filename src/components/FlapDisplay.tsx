@@ -5,74 +5,98 @@ import { getFlapSequence, FlapEntry } from "@/data/flap-destinations";
 import styles from "./FlapDisplay.module.css";
 
 interface FlapDisplayProps {
-  text: string;       // 目的の行先（日本語）
-  textEn?: string;    // 英語（最終表示用）
-  speed?: number;     // 途中フラップの表示間隔(ms)
+  text: string;
+  textEn?: string;
+  speed?: number; // ms per flap
 }
 
-export default function FlapDisplay({ text, textEn = "", speed = 60 }: FlapDisplayProps) {
-  const [displayJa, setDisplayJa] = useState(text);
-  const [displayEn, setDisplayEn] = useState(textEn);
-  const [isFlipping, setIsFlipping] = useState(false);
+export default function FlapDisplay({ text, textEn = "", speed = 80 }: FlapDisplayProps) {
+  const [currentJa, setCurrentJa] = useState(text);
+  const [currentEn, setCurrentEn] = useState(textEn);
+  const [nextJa, setNextJa] = useState(text);
+  const [flipping, setFlipping] = useState(false);
   const prevText = useRef(text);
-  const animating = useRef(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const queueRef = useRef<FlapEntry[]>([]);
+  const runningRef = useRef(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const runSequence = useCallback((sequence: FlapEntry[], finalEn: string) => {
-    if (sequence.length === 0) {
-      animating.current = false;
-      setIsFlipping(false);
+  const processNext = useCallback(() => {
+    if (queueRef.current.length === 0) {
+      runningRef.current = false;
       return;
     }
 
-    animating.current = true;
-    setIsFlipping(true);
-    let index = 0;
+    const entry = queueRef.current.shift()!;
+    setNextJa(entry.ja || "　");
+    setFlipping(true);
 
-    const step = () => {
-      if (index >= sequence.length) {
-        animating.current = false;
-        setIsFlipping(false);
-        setDisplayEn(finalEn);
-        return;
-      }
+    // フリップアニメーション完了後に次へ
+    timerRef.current = setTimeout(() => {
+      setCurrentJa(entry.ja || "　");
+      setCurrentEn(entry.en);
+      setFlipping(false);
 
-      const entry = sequence[index];
-      setDisplayJa(entry.ja || "　");
-      setDisplayEn(entry.en);
-      index++;
-
-      // 最後の1枚はゆっくり（止まる感じ）
-      const delay = index === sequence.length ? speed * 2 : speed;
-      timeoutRef.current = setTimeout(step, delay);
-    };
-
-    step();
+      // 少し間を置いて次のフラップへ
+      timerRef.current = setTimeout(() => {
+        processNext();
+      }, queueRef.current.length === 0 ? 0 : 30);
+    }, speed);
   }, [speed]);
 
   useEffect(() => {
     if (text === prevText.current) return;
 
-    // 前の行先から新しい行先までのフラップ列を取得
     const sequence = getFlapSequence(prevText.current, text);
     prevText.current = text;
 
     if (sequence.length > 0) {
-      runSequence(sequence, textEn);
+      queueRef.current = sequence;
+      if (!runningRef.current) {
+        runningRef.current = true;
+        processNext();
+      }
     } else {
-      setDisplayJa(text);
-      setDisplayEn(textEn);
+      setCurrentJa(text);
+      setCurrentEn(textEn);
     }
 
     return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [text, textEn, runSequence]);
+  }, [text, textEn, processNext]);
 
   return (
-    <span className={`${styles.flapDisplay} ${isFlipping ? styles.flipping : ""}`}>
-      <span className={styles.ja}>{displayJa}</span>
-      {displayEn && <span className={styles.en}>{displayEn}</span>}
+    <span className={styles.container}>
+      {/* 上半分 */}
+      <span className={styles.upper}>
+        <span className={styles.text}>{currentJa}</span>
+      </span>
+
+      {/* 下半分 */}
+      <span className={styles.lower}>
+        <span className={styles.text}>
+          {flipping ? nextJa : currentJa}
+        </span>
+      </span>
+
+      {/* フリップする上半分（倒れ落ちる） */}
+      {flipping && (
+        <span className={styles.flapTop}>
+          <span className={styles.text}>{currentJa}</span>
+        </span>
+      )}
+
+      {/* フリップする下半分（起き上がる） */}
+      {flipping && (
+        <span className={styles.flapBottom}>
+          <span className={styles.text}>{nextJa}</span>
+        </span>
+      )}
+
+      {/* 英語表示 */}
+      {currentEn && !flipping && (
+        <span className={styles.en}>{currentEn}</span>
+      )}
     </span>
   );
 }
