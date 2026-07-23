@@ -3,6 +3,7 @@
 import { DepartureEntry } from "@/types/departure";
 import { findFlapIndex, shubetsuFlaps, shuppatsuFlaps, noribaFlaps, jikanFlaps, fun10Flaps, fun1Flaps, ryousuFlaps } from "@/data/flap-lists";
 import { getFlapIndex } from "@/data/flap-destinations";
+import { findBikouIndex } from "@/data/flap-bikou";
 import FlapUnit from "./FlapUnit";
 import styles from "./DepartureRow.module.css";
 
@@ -65,6 +66,7 @@ export default function DepartureRow({ departure, label }: DepartureRowProps) {
   const ekimeiIdx = getFlapIndex(departure.destination);
   const timeIndices = getTimeIndices(departure.time);
   const ryousuIdx = findFlapIndex(ryousuFlaps, getRyousuValue(departure.cars));
+  const bikouIdx = findBikouIndex(departure.note);
 
   return (
     <div className={styles.row}>
@@ -130,6 +132,14 @@ export default function DepartureRow({ departure, label }: DepartureRowProps) {
         animPath="/flaps/ryousu_anim"
         targetIndex={ryousuIdx}
         totalFlaps={20}
+      />
+
+      {/* 備考 */}
+      <FlapUnit
+        basePath="/flaps/bikou"
+        animPath="/flaps/bikou_anim"
+        targetIndex={bikouIdx}
+        totalFlaps={66}
       />
     </div>
   );
