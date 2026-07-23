@@ -1,0 +1,8 @@
+.flapImg {
+  height: 100%;
+  width: auto;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+  object-fit: contain;
+}
