@@ -1,11 +1,11 @@
 .container {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
   height: 100%;
 }
 
-.divider {
-  height: 2px;
-  background: #fff;
+.rowWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
 }

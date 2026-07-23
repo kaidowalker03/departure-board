@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#2a2a2a]">
       <div className={styles.boardContainer}>
-        {/* 背景画像（ヘッダー + 停車駅LED） */}
+        {/* 背景画像（ヘッダー + 停車駅LED + 白線 + 3行分の枠） */}
         <img
           src="/keikyu-kawasaki_kudari_base.png"
           alt="京急川崎 下り 発車標"
@@ -28,15 +28,14 @@ export default function Home() {
           <StationLEDOverlay stops={departures[0]?.stops ?? []} />
         </div>
 
-        {/* パタパタ3行 + 時計（下部に重ねる） */}
+        {/* パタパタ3行（背景画像の枠内に収める） */}
         <div className={styles.dynamicArea}>
-          <div className={styles.rows}>
-            <DepartureRows departures={departures} />
-          </div>
-          <div className={styles.clockDivider} />
-          <div className={styles.clockArea}>
-            <AnalogClock />
-          </div>
+          <DepartureRows departures={departures} />
+        </div>
+
+        {/* 時計 */}
+        <div className={styles.clockArea}>
+          <AnalogClock />
         </div>
       </div>
 

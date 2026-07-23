@@ -14,8 +14,7 @@ export default function DepartureRows({ departures }: DepartureRowsProps) {
   return (
     <div className={styles.container}>
       {labels.map((label, i) => (
-        <div key={i}>
-          {i > 0 && <div className={styles.divider} />}
+        <div key={i} className={styles.rowWrapper}>
           <DepartureRow departure={departures[i] ?? null} label={label} />
         </div>
       ))}

@@ -11,45 +11,33 @@
   user-select: none;
 }
 
-/* 停車駅LEDの丸を重ねるエリア（画像内のLED位置に合わせる） */
+/* 停車駅LEDの丸を重ねるエリア */
 .ledOverlay {
   position: absolute;
-  /* 画像内の停車駅LED丸の位置に合わせて調整 */
   top: 37%;
   left: 2%;
   right: 2%;
   height: 5%;
 }
 
-/* パタパタ3行 + 時計を重ねるエリア */
+/* パタパタ3行を重ねるエリア（背景画像の白線の間に収める） */
 .dynamicArea {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  /* 画像の下部（白線の下）にパタパタを重ねる */
-  height: 56%;
-  display: flex;
+  /* 背景画像内の3行エリアの位置に合わせる */
+  top: 52%;
+  left: 0.5%;
+  width: 82%;
+  height: 46%;
 }
 
-.rows {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-}
-
-.clockDivider {
-  width: 2px;
-  background: #fff;
-  flex-shrink: 0;
-}
-
+/* 時計エリア */
 .clockArea {
+  position: absolute;
+  top: 52%;
+  right: 0.5%;
+  width: 16%;
+  height: 46%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 16px;
-  flex-shrink: 0;
-  width: 14%;
 }
